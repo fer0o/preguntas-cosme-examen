@@ -76,6 +76,13 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 								Anterior
 							</button>
 							<button
+								id="evaluate-answer"
+								class="rounded-md border border-teal-500 px-4 py-2 text-sm font-semibold text-teal-200 transition hover:bg-teal-500/10"
+								type="button"
+							>
+								Evaluar respuesta
+							</button>
+							<button
 								id="next-question"
 								class="rounded-md bg-teal-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-teal-300 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600"
 								type="button"
@@ -85,6 +92,27 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 						</div>
 					</div>
 				</article>
+
+				<section id="result-panel" class="hidden rounded-lg border border-zinc-800 bg-zinc-900 p-5">
+					<div class="flex flex-wrap items-center justify-between gap-3">
+						<div>
+							<p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Evaluacion local</p>
+							<h3 id="result-title" class="mt-1 text-lg font-semibold text-white"></h3>
+						</div>
+						<p id="result-score" class="rounded-md border border-zinc-700 px-3 py-2 text-sm font-semibold"></p>
+					</div>
+					<p id="result-feedback" class="mt-4 text-sm leading-6 text-zinc-300"></p>
+					<div class="mt-4 grid gap-3 md:grid-cols-2">
+						<div>
+							<p class="text-sm font-semibold text-zinc-200">Puntos detectados</p>
+							<ul id="matched-points" class="mt-2 grid gap-2 text-sm text-zinc-300"></ul>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-zinc-200">Puntos faltantes</p>
+							<ul id="missing-points" class="mt-2 grid gap-2 text-sm text-zinc-300"></ul>
+						</div>
+					</div>
+				</section>
 
 				<details class="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
 					<summary class="cursor-pointer text-sm font-semibold text-zinc-200">Ver respuesta guia</summary>
@@ -96,12 +124,15 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 
 	<script id="questions-data" type="application/json" set:html={questionsJson}></script>
 	<script>
+		import { evaluateAnswer } from "../lib/evaluateAnswer";
+
 		const STORAGE_KEY = "examen-abierto-cosme.progress.v1";
 		const questions = JSON.parse(document.querySelector("#questions-data")?.textContent ?? "[]");
 
 		const state = {
 			currentIndex: 0,
-			answers: {}
+			answers: {},
+			results: {}
 		};
 
 		const questionNavEl = document.querySelector("#question-nav");
@@ -114,7 +145,14 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 		const savedLabelEl = document.querySelector("#saved-label");
 		const previousBtn = document.querySelector("#previous-question");
 		const nextBtn = document.querySelector("#next-question");
+		const evaluateBtn = document.querySelector("#evaluate-answer");
 		const resetBtn = document.querySelector("#reset-progress");
+		const resultPanelEl = document.querySelector("#result-panel");
+		const resultTitleEl = document.querySelector("#result-title");
+		const resultScoreEl = document.querySelector("#result-score");
+		const resultFeedbackEl = document.querySelector("#result-feedback");
+		const matchedPointsEl = document.querySelector("#matched-points");
+		const missingPointsEl = document.querySelector("#missing-points");
 		const guideAnswerEl = document.querySelector("#guide-answer");
 
 		function loadProgress() {
@@ -124,9 +162,11 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 				const parsed = JSON.parse(raw);
 				state.currentIndex = Number.isInteger(parsed.currentIndex) ? parsed.currentIndex : 0;
 				state.answers = parsed.answers ?? {};
+				state.results = parsed.results ?? {};
 			} catch {
 				state.currentIndex = 0;
 				state.answers = {};
+				state.results = {};
 			}
 		}
 
@@ -137,6 +177,7 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 					JSON.stringify({
 						currentIndex: state.currentIndex,
 						answers: state.answers,
+						results: state.results,
 						updatedAt: new Date().toISOString()
 					})
 				);
@@ -153,8 +194,12 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 			return questions.filter((question) => Boolean(state.answers[question.id]?.trim())).length;
 		}
 
+		function evaluatedCount() {
+			return questions.filter((question) => Boolean(state.results[question.id])).length;
+		}
+
 		function renderProgress() {
-			const completed = answeredCount();
+			const completed = evaluatedCount();
 			const percentage = questions.length === 0 ? 0 : Math.round((completed / questions.length) * 100);
 			progressLabelEl.textContent = `${completed}/${questions.length}`;
 			progressBarEl.style.width = `${percentage}%`;
@@ -164,11 +209,14 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 			questionNavEl.innerHTML = "";
 			questions.forEach((question, index) => {
 				const hasAnswer = Boolean(state.answers[question.id]?.trim());
+				const result = state.results[question.id];
 				const button = document.createElement("button");
 				button.type = "button";
 				button.className =
 					index === state.currentIndex
 						? "rounded-md border border-teal-400 bg-teal-400/10 px-3 py-2 text-left text-sm font-semibold text-teal-100"
+						: result
+							? "rounded-md border border-emerald-700 bg-emerald-950/40 px-3 py-2 text-left text-sm text-emerald-100 transition hover:border-emerald-500"
 						: hasAnswer
 							? "rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-left text-sm text-zinc-200 transition hover:border-zinc-500"
 							: "rounded-md border border-zinc-800 px-3 py-2 text-left text-sm text-zinc-400 transition hover:border-zinc-600";
@@ -180,6 +228,45 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 				});
 				questionNavEl.appendChild(button);
 			});
+		}
+
+		function renderList(target, values, emptyText) {
+			target.innerHTML = "";
+			if (!values || values.length === 0) {
+				const item = document.createElement("li");
+				item.className = "rounded-md border border-zinc-800 px-3 py-2 text-zinc-500";
+				item.textContent = emptyText;
+				target.appendChild(item);
+				return;
+			}
+
+			values.forEach((value) => {
+				const item = document.createElement("li");
+				item.className = "rounded-md border border-zinc-800 px-3 py-2";
+				item.textContent = value;
+				target.appendChild(item);
+			});
+		}
+
+		function renderResult(question) {
+			const result = state.results[question.id];
+			if (!result) {
+				resultPanelEl.classList.add("hidden");
+				return;
+			}
+
+			resultPanelEl.classList.remove("hidden");
+			resultTitleEl.textContent = result.label;
+			resultScoreEl.textContent = `${result.score}%`;
+			resultScoreEl.className =
+				result.status === "correct"
+					? "rounded-md border border-emerald-500/60 px-3 py-2 text-sm font-semibold text-emerald-300"
+					: result.status === "partial"
+						? "rounded-md border border-amber-500/60 px-3 py-2 text-sm font-semibold text-amber-300"
+						: "rounded-md border border-rose-500/60 px-3 py-2 text-sm font-semibold text-rose-300";
+			resultFeedbackEl.textContent = result.feedback;
+			renderList(matchedPointsEl, result.matchedPoints, "Sin puntos detectados.");
+			renderList(missingPointsEl, result.missingPoints, "Sin puntos faltantes.");
 		}
 
 		function render() {
@@ -196,15 +283,25 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 				: "Respuesta sin guardar.";
 			renderProgress();
 			renderNavigation();
+			renderResult(question);
 		}
 
 		answerInputEl.addEventListener("input", () => {
 			const question = currentQuestion();
 			state.answers[question.id] = answerInputEl.value;
+			delete state.results[question.id];
 			savedLabelEl.textContent = "Respuesta guardada localmente.";
 			saveProgress();
 			renderProgress();
 			renderNavigation();
+			renderResult(question);
+		});
+
+		evaluateBtn.addEventListener("click", () => {
+			const question = currentQuestion();
+			state.results[question.id] = evaluateAnswer(question, answerInputEl.value);
+			saveProgress();
+			render();
 		});
 
 		previousBtn.addEventListener("click", () => {
@@ -224,6 +321,7 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 			if (!shouldReset) return;
 			state.currentIndex = 0;
 			state.answers = {};
+			state.results = {};
 			saveProgress();
 			render();
 		});

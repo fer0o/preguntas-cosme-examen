@@ -1,9 +1,16 @@
+export type KeyPoint = {
+	label: string;
+	aliases?: string[];
+};
+
+export type KeyPointInput = string | KeyPoint;
+
 export type OpenQuestion = {
 	id: string;
 	topic: string;
 	prompt: string;
 	guideAnswer: string;
-	keyPoints: string[];
+	keyPoints: KeyPointInput[];
 };
 
 export const questions: OpenQuestion[] = [
@@ -14,22 +21,34 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Estrato corneo: barrera que protege la piel del polvo y germenes. Estrato lucido: se encuentra en palmas de manos y plantas del pie, resistente al roce. Estrato granuloso: mantiene niveles de hidratacion y se encuentran las ceramidas. Estrato espinoso: es el sistema inmunologico de la piel y contiene celulas de Langerhans. Estrato basal: celulas nuevas para renovar la epidermis, se encuentran las celulas de Merkel y melanocitos.",
 		keyPoints: [
-			"estrato corneo",
-			"protege la piel del polvo y germenes",
-			"estrato lucido",
-			"palmas de manos",
-			"plantas del pie",
-			"resistente al roce",
-			"estrato granuloso",
-			"hidratacion",
-			"ceramidas",
-			"estrato espinoso",
-			"sistema inmunologico",
-			"celulas de langerhans",
-			"estrato basal",
-			"renovar la epidermis",
-			"celulas de merkel",
-			"melanocitos"
+			{ label: "estrato corneo", aliases: ["capa cornea", "corneo"] },
+			{
+				label: "protege la piel del polvo y germenes",
+				aliases: ["barrera protectora", "protege de polvo y germenes", "evita entrada de germenes"]
+			},
+			{ label: "estrato lucido", aliases: ["capa lucida", "lucido"] },
+			{ label: "palmas de manos", aliases: ["palmas", "palma de la mano"] },
+			{ label: "plantas del pie", aliases: ["plantas de los pies", "planta del pie"] },
+			{ label: "resistente al roce", aliases: ["soporta friccion", "resiste friccion"] },
+			{ label: "estrato granuloso", aliases: ["capa granulosa", "granuloso"] },
+			{
+				label: "hidratacion",
+				aliases: ["mantiene hidratacion", "nivel de agua", "niveles de hidratacion"]
+			},
+			{ label: "ceramidas", aliases: ["lipidos cementantes"] },
+			{ label: "estrato espinoso", aliases: ["capa espinosa", "espinoso"] },
+			{
+				label: "sistema inmunologico",
+				aliases: ["defensa inmunologica", "defensa de la piel", "inmunidad de la piel"]
+			},
+			{ label: "celulas de langerhans", aliases: ["langerhans"] },
+			{ label: "estrato basal", aliases: ["capa basal", "basal"] },
+			{
+				label: "renovar la epidermis",
+				aliases: ["regenera la epidermis", "produce celulas nuevas", "renovacion celular"]
+			},
+			{ label: "celulas de merkel", aliases: ["merkel"] },
+			{ label: "melanocitos", aliases: ["celulas productoras de melanina"] }
 		]
 	},
 	{
@@ -39,11 +58,26 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Factor Natural de Hidratacion. Sustancias higroscopicas naturales de la piel que atraen y retienen el agua, mantiene la barrera cutanea flexible, sana e hidratada.",
 		keyPoints: [
-			"factor natural de hidratacion",
-			"sustancias higroscopicas",
-			"atraen y retienen el agua",
-			"barrera cutanea flexible",
-			"sana e hidratada"
+			{
+				label: "factor natural de hidratacion",
+				aliases: ["fnh", "factor natural hidratante", "natural moisturizing factor"]
+			},
+			{
+				label: "sustancias higroscopicas",
+				aliases: ["sustancias que atraen agua", "componentes higroscopicos", "absorbe agua"]
+			},
+			{
+				label: "atraen y retienen el agua",
+				aliases: ["retienen agua", "conserva la hidratacion", "mantiene agua en la piel"]
+			},
+			{
+				label: "barrera cutanea flexible",
+				aliases: ["mantiene flexible la barrera", "flexibilidad de la piel", "barrera de la piel flexible"]
+			},
+			{
+				label: "sana e hidratada",
+				aliases: ["piel hidratada", "piel sana", "mantiene la piel sana e hidratada"]
+			}
 		]
 	},
 	{
@@ -53,9 +87,18 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Dar soporte estructural, regular el paso de nutrientes y actuar como barrera de defensa.",
 		keyPoints: [
-			"dar soporte estructural",
-			"regular el paso de nutrientes",
-			"barrera de defensa"
+			{
+				label: "dar soporte estructural",
+				aliases: ["soporte estructural", "sostener la estructura", "dar estructura"]
+			},
+			{
+				label: "regular el paso de nutrientes",
+				aliases: ["controla nutrientes", "regula nutrientes", "paso de nutrientes"]
+			},
+			{
+				label: "barrera de defensa",
+				aliases: ["defensa", "proteccion", "barrera protectora"]
+			}
 		]
 	},
 	{
@@ -63,7 +106,11 @@ export const questions: OpenQuestion[] = [
 		topic: "Cosmetologia",
 		prompt: "Que es la MEC?",
 		guideAnswer: "Matriz extracelular, contiene colageno y elastina.",
-		keyPoints: ["matriz extracelular", "colageno", "elastina"]
+		keyPoints: [
+			{ label: "matriz extracelular", aliases: ["mec", "matriz extra celular"] },
+			{ label: "colageno", aliases: ["fibras de colageno"] },
+			{ label: "elastina", aliases: ["fibras elasticas"] }
+		]
 	},
 	{
 		id: "cosme-005",
@@ -71,7 +118,15 @@ export const questions: OpenQuestion[] = [
 		prompt: "Cuales son los GAGs?",
 		guideAnswer:
 			"Son hidratantes naturales como el acido hialuronico, ceramidas y aminoacidos.",
-		keyPoints: ["hidratantes naturales", "acido hialuronico", "ceramidas", "aminoacidos"]
+		keyPoints: [
+			{
+				label: "hidratantes naturales",
+				aliases: ["humectantes naturales", "mantienen hidratacion", "retienen humedad"]
+			},
+			{ label: "acido hialuronico", aliases: ["hialuronico"] },
+			{ label: "ceramidas", aliases: ["lipidos de barrera"] },
+			{ label: "aminoacidos", aliases: ["amino acidos"] }
+		]
 	},
 	{
 		id: "cosme-006",

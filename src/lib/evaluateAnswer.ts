@@ -1,4 +1,4 @@
-import type { OpenQuestion } from "../data/questions";
+import type { KeyPointInput, OpenQuestion } from "../data/questions";
 
 export type EvaluationResult = {
 	status: "correct" | "partial" | "incorrect";
@@ -62,6 +62,19 @@ function matchesPoint(answer: string, point: string): boolean {
 	return matchedTerms.length >= requiredMatches;
 }
 
+function keyPointLabel(point: KeyPointInput): string {
+	return typeof point === "string" ? point : point.label;
+}
+
+function keyPointMatchers(point: KeyPointInput): string[] {
+	if (typeof point === "string") return [point];
+	return [point.label, ...(point.aliases ?? [])];
+}
+
+function matchesKeyPoint(answer: string, point: KeyPointInput): boolean {
+	return keyPointMatchers(point).some((matcher) => matchesPoint(answer, matcher));
+}
+
 export function evaluateAnswer(question: OpenQuestion, answer: string): EvaluationResult {
 	const cleanAnswer = answer.trim();
 	if (cleanAnswer.length < 8) {
@@ -71,12 +84,16 @@ export function evaluateAnswer(question: OpenQuestion, answer: string): Evaluati
 			score: 0,
 			feedback: "La respuesta es demasiado corta para evaluar los conceptos clave.",
 			matchedPoints: [],
-			missingPoints: question.keyPoints
+			missingPoints: question.keyPoints.map(keyPointLabel)
 		};
 	}
 
-	const matchedPoints = question.keyPoints.filter((point) => matchesPoint(cleanAnswer, point));
-	const missingPoints = question.keyPoints.filter((point) => !matchedPoints.includes(point));
+	const matchedPoints = question.keyPoints
+		.filter((point) => matchesKeyPoint(cleanAnswer, point))
+		.map(keyPointLabel);
+	const missingPoints = question.keyPoints
+		.filter((point) => !matchedPoints.includes(keyPointLabel(point)))
+		.map(keyPointLabel);
 	const score = Math.round((matchedPoints.length / question.keyPoints.length) * 100);
 
 	if (score >= 80) {

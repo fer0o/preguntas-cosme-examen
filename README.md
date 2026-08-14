@@ -1,46 +1,136 @@
-# Astro Starter Kit: Basics
+# Examen Abierto Cosme
+
+App web para practicar preguntas abiertas de cosmetologia. La persona escribe su respuesta, la evalua contra puntos clave de una respuesta guia y guarda su avance localmente en el navegador.
+
+## Estado Actual
+
+- 17 preguntas confirmadas de cosmetologia.
+- Practica de respuesta abierta en una sola pantalla.
+- Evaluacion local por puntos clave.
+- Resultado por pregunta: correcta, parcial o incorrecta.
+- Porcentaje, feedback, puntos detectados y puntos faltantes.
+- Resumen final con promedio y preguntas por reforzar.
+- Historial local de intentos guardados.
+- Modales con SweetAlert2 para acciones importantes.
+- Sin backend, base de datos, login ni OpenAI API todavia.
+
+## Stack
+
+- Astro 7
+- TypeScript
+- Tailwind CSS 4
+- SweetAlert2
+
+## Requisitos
+
+Node.js `>=22.12.0`
+
+## Instalacion
 
 ```sh
-npm create astro@latest -- --template basics
+npm install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Desarrollo
 
-## 🚀 Project Structure
+```sh
+npm run dev
+```
 
-Inside of your Astro project, you'll see the following folders and files:
+Por defecto Astro levanta el servidor en:
 
-```text
+```txt
+http://localhost:4321
+```
+
+## Build
+
+```sh
+npm run build
+```
+
+## Preview
+
+```sh
+npm run preview
+```
+
+## Estructura Principal
+
+```txt
 /
 ├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── src/
+│   ├── data/
+│   │   └── questions.ts
+│   ├── lib/
+│   │   └── evaluateAnswer.ts
+│   ├── layouts/
+│   │   └── Layout.astro
+│   ├── pages/
+│   │   └── index.astro
+│   └── styles/
+│       └── global.css
+├── AGENTS.md
+├── astro.config.mjs
+├── package.json
+└── README.md
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Archivos Clave
 
-## 🧞 Commands
+- `src/data/questions.ts`: banco de preguntas, respuestas guia y puntos clave.
+- `src/lib/evaluateAnswer.ts`: evaluador local deterministico.
+- `src/pages/index.astro`: interfaz principal, progreso, resumen e historial.
+- `AGENTS.md`: contexto tecnico para futuras sesiones de Codex/IA.
 
-All commands are run from the root of the project, from a terminal:
+## Persistencia Local
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+El avance se guarda en `localStorage` con la llave:
 
-## 👀 Want to learn more?
+```txt
+examen-abierto-cosme.progress.v1
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Se guarda:
+
+- pregunta actual;
+- respuestas;
+- evaluaciones;
+- historial de intentos;
+- fecha de actualizacion.
+
+El historial local se limita a 20 intentos.
+
+## Evaluacion
+
+La evaluacion actual es local y simple. Compara la respuesta escrita contra los `keyPoints` de cada pregunta.
+
+El resultado mantiene esta forma:
+
+```ts
+{
+	status: "correct" | "partial" | "incorrect",
+	label: string,
+	score: number,
+	feedback: string,
+	matchedPoints: string[],
+	missingPoints: string[]
+}
+```
+
+Esta estructura debe mantenerse estable para poder reemplazar despues el evaluador local por una evaluacion con IA sin reescribir toda la interfaz.
+
+## Plan Futuro
+
+- Agregar una API route como `/api/evaluate`.
+- Conectar OpenAI desde el servidor usando `OPENAI_API_KEY`.
+- Mantener la llave fuera del frontend.
+- Reemplazar la evaluacion local por evaluacion semantica con IA.
+- Opcional: usar el historial para generar recomendaciones de estudio.
+
+## Notas
+
+- La UI esta en espanol.
+- La app esta pensada para uso pequeno: una persona o pocas personas.
+- Antes de cerrar cambios de codigo, correr `npm run build`.

@@ -12,7 +12,7 @@ App web para practicar preguntas abiertas de cosmetologia. La persona escribe su
 - Resumen final con promedio y preguntas por reforzar.
 - Historial local de intentos guardados.
 - Modales con SweetAlert2 para acciones importantes.
-- Sin backend, base de datos, login ni OpenAI API todavia.
+- Sin backend, base de datos, login ni APIs de pago.
 
 ## Stack
 
@@ -82,7 +82,7 @@ npm run preview
 - `src/data/questions.ts`: banco de preguntas, respuestas guia y puntos clave.
 - `src/lib/evaluateAnswer.ts`: evaluador local deterministico.
 - `src/pages/index.astro`: interfaz principal, progreso, resumen e historial.
-- `AGENTS.md`: contexto tecnico para futuras sesiones de Codex/IA.
+- `AGENTS.md`: contexto tecnico para futuras sesiones de Codex.
 
 ## Persistencia Local
 
@@ -119,15 +119,15 @@ El resultado mantiene esta forma:
 }
 ```
 
-Esta estructura debe mantenerse estable para poder reemplazar despues el evaluador local por una evaluacion con IA sin reescribir toda la interfaz.
+Esta estructura debe mantenerse estable para mejorar el evaluador local sin reescribir toda la interfaz.
 
 ## Plan Futuro
 
-- Agregar una API route como `/api/evaluate`.
-- Conectar OpenAI desde el servidor usando `OPENAI_API_KEY`.
-- Mantener la llave fuera del frontend.
-- Reemplazar la evaluacion local por evaluacion semantica con IA.
-- Opcional: usar el historial para generar recomendaciones de estudio.
+- Mejorar el evaluador local con sinonimos y respuestas equivalentes.
+- Cambiar `keyPoints` a una estructura con `label` y `aliases`.
+- Agregar reglas por tipo de pregunta: definicion, lista y secuencia.
+- Mantener la app gratis y local, sin dependencias de APIs externas.
+- Opcional: mejorar el historial con tendencias por intento.
 
 ## Notas
 

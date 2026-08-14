@@ -511,29 +511,6 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 			});
 		}
 
-		async function evaluateCurrentAnswer(question, answer) {
-			try {
-				const response = await fetch("/api/evaluate", {
-					method: "POST",
-					headers: {
-						"content-type": "application/json"
-					},
-					body: JSON.stringify({
-						questionId: question.id,
-						answer
-					})
-				});
-
-				if (!response.ok) {
-					throw new Error(`API evaluation failed with ${response.status}`);
-				}
-
-				return await response.json();
-			} catch {
-				return evaluateAnswer(question, answer);
-			}
-		}
-
 		function render() {
 			const question = currentQuestion();
 			questionTopicEl.textContent = question.topic;
@@ -564,18 +541,11 @@ const topicCount = new Set(questions.map((question) => question.topic)).size;
 			renderResult(question);
 		});
 
-		evaluateBtn.addEventListener("click", async () => {
+		evaluateBtn.addEventListener("click", () => {
 			const question = currentQuestion();
-			evaluateBtn.disabled = true;
-			evaluateBtn.textContent = "Evaluando...";
-			try {
-				state.results[question.id] = await evaluateCurrentAnswer(question, answerInputEl.value);
-				saveProgress();
-				render();
-			} finally {
-				evaluateBtn.disabled = false;
-				evaluateBtn.textContent = "Evaluar respuesta";
-			}
+			state.results[question.id] = evaluateAnswer(question, answerInputEl.value);
+			saveProgress();
+			render();
 		});
 
 		previousBtn.addEventListener("click", () => {

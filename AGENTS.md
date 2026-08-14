@@ -4,7 +4,7 @@
 
 - This is a single-package Astro app for open-ended cosmetology exam practice.
 - Stack: Astro 7, TypeScript, Tailwind CSS 4, SweetAlert2.
-- The app is currently frontend-only. There is no backend, database, auth, or OpenAI API route yet.
+- The app is frontend-only. There is no backend, database, auth, paid API, or OpenAI integration.
 - The app is intended for very small usage: usually one person, maybe up to five.
 - UI copy is Spanish and should stay Spanish.
 - The local filesystem path may be nested, but the Git repository root is this directory.
@@ -63,7 +63,7 @@ History is capped at 20 attempts in `src/pages/index.astro`.
 
 ## Evaluation Contract
 
-Keep this result shape stable because it should also work when evaluation is moved to AI:
+Keep this result shape stable while improving the local evaluator:
 
 ```ts
 {
@@ -76,18 +76,15 @@ Keep this result shape stable because it should also work when evaluation is mov
 }
 ```
 
-Current local evaluation is intentionally simple. It is useful for validating the UX, but it is not semantically equivalent to AI evaluation. It can vary when users phrase answers differently.
+Current local evaluation is intentionally simple. It can vary when users phrase answers differently. The planned improvement is local aliases/synonyms, not a paid AI API.
 
-## Future AI Plan
+## Future Local Evaluation Plan
 
-When connecting OpenAI later:
-
-- Do not put `OPENAI_API_KEY` in frontend code.
-- Add a server/API route, likely `/api/evaluate`.
-- The API route should receive question data and the user's answer.
-- The API route should return the same evaluation contract used by `evaluateAnswer`.
-- The UI should not need a major rewrite; only the evaluation call should change.
-- A later feature could use saved history to generate study recommendations, but normal history rendering should not require AI.
+- Keep the app free/local and avoid paid API dependencies.
+- Improve `src/data/questions.ts` by changing `keyPoints` from `string[]` to objects with `label` and optional `aliases`.
+- Update `src/lib/evaluateAnswer.ts` to match labels and aliases.
+- Add local rules for definitions, lists, and ordered treatment sequences if needed.
+- Update tests whenever evaluator behavior changes.
 
 ## Editing Notes
 

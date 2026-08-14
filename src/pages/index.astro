@@ -1,12 +1,235 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-import '../styles/global.css';
+import Layout from "../layouts/Layout.astro";
+import { questions } from "../data/questions";
+import "../styles/global.css";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const questionsJson = JSON.stringify(questions).replace(/</g, "\\u003c");
+const topicCount = new Set(questions.map((question) => question.topic)).size;
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Examen Abierto Cosme">
+	<main class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-6 sm:px-6">
+		<header class="mb-5 flex flex-wrap items-start justify-between gap-4 border-b border-zinc-800 pb-5">
+			<div>
+				<p class="text-xs font-semibold uppercase tracking-wide text-teal-300">Preparacion de examen</p>
+				<h1 class="mt-2 text-3xl font-bold text-white">Examen Abierto Cosme</h1>
+				<p class="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
+					Practica respuestas abiertas con el banco confirmado de cosmetologia. Tus respuestas se guardan solo en este navegador.
+				</p>
+			</div>
+			<div class="grid grid-cols-2 gap-2">
+				<div class="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3">
+					<p class="text-xs text-zinc-500">Preguntas</p>
+					<p class="text-xl font-semibold text-white">{questions.length}</p>
+				</div>
+				<div class="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3">
+					<p class="text-xs text-zinc-500">Temas</p>
+					<p class="text-xl font-semibold text-white">{topicCount}</p>
+				</div>
+			</div>
+		</header>
+
+		<section class="grid flex-1 gap-5 lg:grid-cols-[16rem_1fr]">
+			<aside class="rounded-lg border border-zinc-800 bg-zinc-900 p-4 lg:max-h-[calc(100vh-9rem)]">
+				<div class="mb-3 flex items-center justify-between gap-2">
+					<p class="text-sm font-semibold text-zinc-200">Avance</p>
+					<p id="progress-label" class="text-xs text-zinc-400">0/{questions.length}</p>
+				</div>
+				<div class="mb-4 h-2 rounded-full bg-zinc-800">
+					<div id="progress-bar" class="h-2 w-0 rounded-full bg-teal-400 transition-all"></div>
+				</div>
+				<nav id="question-nav" class="grid max-h-72 gap-2 overflow-y-auto pr-1 lg:max-h-[calc(100vh-16rem)]"></nav>
+				<button
+					id="reset-progress"
+					class="mt-4 w-full rounded-md border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 transition hover:border-rose-400 hover:text-rose-200"
+					type="button"
+				>
+					Reiniciar progreso
+				</button>
+			</aside>
+
+			<div class="grid content-start gap-4">
+				<article class="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
+					<div class="flex flex-wrap items-start justify-between gap-3">
+						<div>
+							<p id="question-topic" class="text-xs font-semibold uppercase tracking-wide text-teal-300"></p>
+							<h2 id="question-title" class="mt-2 text-xl font-semibold leading-8 text-white"></h2>
+						</div>
+						<p id="question-counter" class="rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-300"></p>
+					</div>
+
+					<label for="answer-input" class="mt-5 block text-sm font-semibold text-zinc-200">Tu respuesta</label>
+					<textarea
+						id="answer-input"
+						class="mt-2 min-h-48 w-full resize-y rounded-md border border-zinc-700 bg-zinc-950 px-4 py-3 text-base leading-7 text-zinc-100 outline-none transition placeholder:text-zinc-600 focus:border-teal-400"
+						placeholder="Escribe tu respuesta aqui..."
+					></textarea>
+
+					<div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+						<p id="saved-label" class="text-sm text-zinc-500">Respuesta sin guardar.</p>
+						<div class="flex flex-wrap gap-2">
+							<button
+								id="previous-question"
+								class="rounded-md border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-200 transition hover:border-zinc-500 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:text-zinc-600"
+								type="button"
+							>
+								Anterior
+							</button>
+							<button
+								id="next-question"
+								class="rounded-md bg-teal-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-teal-300 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600"
+								type="button"
+							>
+								Siguiente
+							</button>
+						</div>
+					</div>
+				</article>
+
+				<details class="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
+					<summary class="cursor-pointer text-sm font-semibold text-zinc-200">Ver respuesta guia</summary>
+					<p id="guide-answer" class="mt-3 text-sm leading-6 text-zinc-300"></p>
+				</details>
+			</div>
+		</section>
+	</main>
+
+	<script id="questions-data" type="application/json" set:html={questionsJson}></script>
+	<script>
+		const STORAGE_KEY = "examen-abierto-cosme.progress.v1";
+		const questions = JSON.parse(document.querySelector("#questions-data")?.textContent ?? "[]");
+
+		const state = {
+			currentIndex: 0,
+			answers: {}
+		};
+
+		const questionNavEl = document.querySelector("#question-nav");
+		const progressLabelEl = document.querySelector("#progress-label");
+		const progressBarEl = document.querySelector("#progress-bar");
+		const questionTopicEl = document.querySelector("#question-topic");
+		const questionTitleEl = document.querySelector("#question-title");
+		const questionCounterEl = document.querySelector("#question-counter");
+		const answerInputEl = document.querySelector("#answer-input");
+		const savedLabelEl = document.querySelector("#saved-label");
+		const previousBtn = document.querySelector("#previous-question");
+		const nextBtn = document.querySelector("#next-question");
+		const resetBtn = document.querySelector("#reset-progress");
+		const guideAnswerEl = document.querySelector("#guide-answer");
+
+		function loadProgress() {
+			try {
+				const raw = localStorage.getItem(STORAGE_KEY);
+				if (!raw) return;
+				const parsed = JSON.parse(raw);
+				state.currentIndex = Number.isInteger(parsed.currentIndex) ? parsed.currentIndex : 0;
+				state.answers = parsed.answers ?? {};
+			} catch {
+				state.currentIndex = 0;
+				state.answers = {};
+			}
+		}
+
+		function saveProgress() {
+			try {
+				localStorage.setItem(
+					STORAGE_KEY,
+					JSON.stringify({
+						currentIndex: state.currentIndex,
+						answers: state.answers,
+						updatedAt: new Date().toISOString()
+					})
+				);
+			} catch {
+				// Ignore local storage errors.
+			}
+		}
+
+		function currentQuestion() {
+			return questions[state.currentIndex];
+		}
+
+		function answeredCount() {
+			return questions.filter((question) => Boolean(state.answers[question.id]?.trim())).length;
+		}
+
+		function renderProgress() {
+			const completed = answeredCount();
+			const percentage = questions.length === 0 ? 0 : Math.round((completed / questions.length) * 100);
+			progressLabelEl.textContent = `${completed}/${questions.length}`;
+			progressBarEl.style.width = `${percentage}%`;
+		}
+
+		function renderNavigation() {
+			questionNavEl.innerHTML = "";
+			questions.forEach((question, index) => {
+				const hasAnswer = Boolean(state.answers[question.id]?.trim());
+				const button = document.createElement("button");
+				button.type = "button";
+				button.className =
+					index === state.currentIndex
+						? "rounded-md border border-teal-400 bg-teal-400/10 px-3 py-2 text-left text-sm font-semibold text-teal-100"
+						: hasAnswer
+							? "rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-left text-sm text-zinc-200 transition hover:border-zinc-500"
+							: "rounded-md border border-zinc-800 px-3 py-2 text-left text-sm text-zinc-400 transition hover:border-zinc-600";
+				button.textContent = `${index + 1}. ${question.prompt}`;
+				button.addEventListener("click", () => {
+					state.currentIndex = index;
+					saveProgress();
+					render();
+				});
+				questionNavEl.appendChild(button);
+			});
+		}
+
+		function render() {
+			const question = currentQuestion();
+			questionTopicEl.textContent = question.topic;
+			questionTitleEl.textContent = question.prompt;
+			questionCounterEl.textContent = `Pregunta ${state.currentIndex + 1} de ${questions.length}`;
+			answerInputEl.value = state.answers[question.id] ?? "";
+			guideAnswerEl.textContent = question.guideAnswer;
+			previousBtn.disabled = state.currentIndex === 0;
+			nextBtn.disabled = state.currentIndex === questions.length - 1;
+			savedLabelEl.textContent = state.answers[question.id]?.trim()
+				? "Respuesta guardada localmente."
+				: "Respuesta sin guardar.";
+			renderProgress();
+			renderNavigation();
+		}
+
+		answerInputEl.addEventListener("input", () => {
+			const question = currentQuestion();
+			state.answers[question.id] = answerInputEl.value;
+			savedLabelEl.textContent = "Respuesta guardada localmente.";
+			saveProgress();
+			renderProgress();
+			renderNavigation();
+		});
+
+		previousBtn.addEventListener("click", () => {
+			state.currentIndex = Math.max(0, state.currentIndex - 1);
+			saveProgress();
+			render();
+		});
+
+		nextBtn.addEventListener("click", () => {
+			state.currentIndex = Math.min(questions.length - 1, state.currentIndex + 1);
+			saveProgress();
+			render();
+		});
+
+		resetBtn.addEventListener("click", () => {
+			const shouldReset = window.confirm("Reiniciar todo el progreso local?");
+			if (!shouldReset) return;
+			state.currentIndex = 0;
+			state.answers = {};
+			saveProgress();
+			render();
+		});
+
+		loadProgress();
+		state.currentIndex = Math.min(Math.max(state.currentIndex, 0), questions.length - 1);
+		render();
+	</script>
 </Layout>

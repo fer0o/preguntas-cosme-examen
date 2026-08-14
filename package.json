@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "test": "vitest run",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -16,5 +17,8 @@
     "astro": "^7.2.2",
     "sweetalert2": "^11.26.25",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
   }
 }

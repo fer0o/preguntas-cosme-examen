@@ -9,6 +9,21 @@ if (!fnhQuestion) {
 	throw new Error("Missing expected test question cosme-002.");
 }
 
+const celluliteTreatmentQuestion = questions.find((question) => question.id === "cosme-010");
+if (!celluliteTreatmentQuestion) {
+	throw new Error("Missing expected test question cosme-010.");
+}
+
+const freeRadicalQuestion = questions.find((question) => question.id === "cosme-014");
+if (!freeRadicalQuestion) {
+	throw new Error("Missing expected test question cosme-014.");
+}
+
+const facialMusclesQuestion = questions.find((question) => question.id === "cosme-017");
+if (!facialMusclesQuestion) {
+	throw new Error("Missing expected test question cosme-017.");
+}
+
 function keyPointLabel(point: (typeof questions)[number]["keyPoints"][number]): string {
 	return typeof point === "string" ? point : point.label;
 }
@@ -100,5 +115,52 @@ describe("evaluateAnswer", () => {
 		expect(result.score).toBe(100);
 		expect(result.matchedPoints).toEqual(["atraen y retienen el agua"]);
 		expect(result.missingPoints).toEqual([]);
+	});
+
+	it("uses real aliases from the cellulite treatment sequence", () => {
+		const result = evaluateAnswer(
+			celluliteTreatmentQuestion,
+			"Primero abrir ganglios, luego exfoliar, hacer masaje reductor, usar aparatos, drenaje linfatico, mascara y cerrar tratamiento."
+		);
+
+		expect(result.status).toBe("correct");
+		expect(result.matchedPoints).toContain("apertura de ganglios");
+		expect(result.matchedPoints).toContain("exfoliacion");
+		expect(result.matchedPoints).toContain("masaje reductivo");
+		expect(result.matchedPoints).toContain("aparatologia");
+		expect(result.matchedPoints).toContain("drenaje linfatico manual");
+		expect(result.matchedPoints).toContain("mascarilla");
+		expect(result.matchedPoints).toContain("sellar tratamiento");
+	});
+
+	it("uses real aliases from the free radical question", () => {
+		const result = evaluateAnswer(
+			freeRadicalQuestion,
+			"Son moleculas inestables con un electron libre; roban un electron, causan oxidacion y danan la estructura."
+		);
+
+		expect(result.status).toBe("correct");
+		expect(result.matchedPoints).toContain("especies quimicas");
+		expect(result.matchedPoints).toContain("electron suelto");
+		expect(result.matchedPoints).toContain("incompleta e inestable");
+		expect(result.matchedPoints).toContain("toman un electron");
+		expect(result.matchedPoints).toContain("oxidan otra sustancia");
+		expect(result.matchedPoints).toContain("estructura danada");
+	});
+
+	it("uses real aliases from the facial muscles question", () => {
+		const result = evaluateAnswer(
+			facialMusclesQuestion,
+			"Risorio, buccinador, cigomaticos, elevador del labio superior, procer y mentoniano."
+		);
+
+		expect(result.status).toBe("correct");
+		expect(result.matchedPoints).toContain("risorio");
+		expect(result.matchedPoints).toContain("buccinador");
+		expect(result.matchedPoints).toContain("cigomatico mayor");
+		expect(result.matchedPoints).toContain("cigomatico menor");
+		expect(result.matchedPoints).toContain("elevador labio superior");
+		expect(result.matchedPoints).toContain("piramidal");
+		expect(result.matchedPoints).toContain("cuadrado del menton");
 	});
 });

@@ -135,12 +135,27 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Estrato granuloso. Actuan como cemento, protegiendo la barrera cutanea, retiene la humedad, previene deshidratacion y bloquea la entrada de contaminacion.",
 		keyPoints: [
-			"estrato granuloso",
-			"actuan como cemento",
-			"protegen la barrera cutanea",
-			"retienen la humedad",
-			"previenen deshidratacion",
-			"bloquean la entrada de contaminacion"
+			{ label: "estrato granuloso", aliases: ["capa granulosa", "granuloso"] },
+			{
+				label: "actuan como cemento",
+				aliases: ["cemento celular", "cemento de la piel", "union entre celulas"]
+			},
+			{
+				label: "protegen la barrera cutanea",
+				aliases: ["protege la barrera de la piel", "refuerzan la barrera cutanea", "proteccion cutanea"]
+			},
+			{
+				label: "retienen la humedad",
+				aliases: ["mantienen humedad", "conservan la hidratacion", "retienen agua"]
+			},
+			{
+				label: "previenen deshidratacion",
+				aliases: ["evitan deshidratacion", "evitan perdida de agua", "previenen perdida de agua"]
+			},
+			{
+				label: "bloquean la entrada de contaminacion",
+				aliases: ["evitan contaminacion", "impiden entrada de contaminantes", "bloquean contaminantes"]
+			}
 		]
 	},
 	{
@@ -150,10 +165,16 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Al exponer la piel a la radiacion UV, los melanocitos actuan como glandulas secretoras produciendo granulos de melanina.",
 		keyPoints: [
-			"radiacion uv",
-			"melanocitos",
-			"glandulas secretoras",
-			"granulos de melanina"
+			{ label: "radiacion uv", aliases: ["rayos uv", "luz ultravioleta", "radiacion ultravioleta"] },
+			{ label: "melanocitos", aliases: ["celulas melanociticas"] },
+			{
+				label: "glandulas secretoras",
+				aliases: ["actuan como secretoras", "secretan", "producen secrecion"]
+			},
+			{
+				label: "granulos de melanina",
+				aliases: ["melanina", "pigmento melanina", "granulos pigmentarios"]
+			}
 		]
 	},
 	{
@@ -163,12 +184,18 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Blanco: reserva energetica, tejido maduro. Pardo: generador de calor, tejido inmaduro.",
 		keyPoints: [
-			"blanco",
-			"reserva energetica",
-			"tejido maduro",
-			"pardo",
-			"generador de calor",
-			"tejido inmaduro"
+			{ label: "blanco", aliases: ["adipocito blanco", "celula adiposa blanca", "grasa blanca"] },
+			{
+				label: "reserva energetica",
+				aliases: ["almacena energia", "reserva de energia", "almacen de energia"]
+			},
+			{ label: "tejido maduro", aliases: ["maduro"] },
+			{ label: "pardo", aliases: ["adipocito pardo", "celula adiposa parda", "grasa parda"] },
+			{
+				label: "generador de calor",
+				aliases: ["produce calor", "genera calor", "termogenesis"]
+			},
+			{ label: "tejido inmaduro", aliases: ["inmaduro"] }
 		]
 	},
 	{
@@ -178,12 +205,18 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Edad, genetica, vida sedentaria, falta de hidratacion, mala circulacion y obesidad.",
 		keyPoints: [
-			"edad",
-			"genetica",
-			"vida sedentaria",
-			"falta de hidratacion",
-			"mala circulacion",
-			"obesidad"
+			{ label: "edad", aliases: ["envejecimiento"] },
+			{ label: "genetica", aliases: ["herencia", "factor hereditario", "predisposicion genetica"] },
+			{ label: "vida sedentaria", aliases: ["sedentarismo", "falta de actividad fisica"] },
+			{
+				label: "falta de hidratacion",
+				aliases: ["deshidratacion", "poca hidratacion", "no tomar agua"]
+			},
+			{
+				label: "mala circulacion",
+				aliases: ["problemas circulatorios", "circulacion deficiente", "pobre circulacion"]
+			},
+			{ label: "obesidad", aliases: ["sobrepeso", "exceso de peso"] }
 		]
 	},
 	{
@@ -193,13 +226,16 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Apertura de ganglios, exfoliacion, masaje reductivo, aparatologia, drenaje linfatico manual, mascarilla y sellar tratamiento.",
 		keyPoints: [
-			"apertura de ganglios",
-			"exfoliacion",
-			"masaje reductivo",
-			"aparatologia",
-			"drenaje linfatico manual",
-			"mascarilla",
-			"sellar tratamiento"
+			{ label: "apertura de ganglios", aliases: ["abrir ganglios", "activacion de ganglios"] },
+			{ label: "exfoliacion", aliases: ["exfoliar", "exfoliante"] },
+			{ label: "masaje reductivo", aliases: ["masaje para reducir", "masaje reductor"] },
+			{ label: "aparatologia", aliases: ["aparatos", "equipos", "uso de aparatologia"] },
+			{
+				label: "drenaje linfatico manual",
+				aliases: ["drenaje linfatico", "drenaje manual", "masaje linfatico"]
+			},
+			{ label: "mascarilla", aliases: ["mascara", "aplicar mascarilla"] },
+			{ label: "sellar tratamiento", aliases: ["sellado", "cerrar tratamiento", "finalizar tratamiento"] }
 		]
 	},
 	{
@@ -209,10 +245,16 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Que enfermedades has padecido? Tienes cirugias esteticas o implantes / injertos?",
 		keyPoints: [
-			"enfermedades has padecido",
-			"cirugias esteticas",
-			"implantes",
-			"injertos"
+			{
+				label: "enfermedades has padecido",
+				aliases: ["antecedentes medicos", "enfermedades previas", "padecimientos", "historial medico"]
+			},
+			{
+				label: "cirugias esteticas",
+				aliases: ["cirugias", "procedimientos esteticos", "operaciones esteticas"]
+			},
+			{ label: "implantes", aliases: ["implante", "protesis"] },
+			{ label: "injertos", aliases: ["injerto", "rellenos", "relleno"] }
 		]
 	},
 	{
@@ -222,17 +264,20 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Limpieza, exfoliacion, extraccion, plasma con ozono o alta frecuencia, reparador tisular, aceite de ozono, mascarilla, tonico y sellar tratamiento. Terapia LED antes, durante o despues de mascarilla.",
 		keyPoints: [
-			"limpieza",
-			"exfoliacion",
-			"extraccion",
-			"plasma con ozono",
-			"alta frecuencia",
-			"reparador tisular",
-			"aceite de ozono",
-			"mascarilla",
-			"tonico",
-			"sellar tratamiento",
-			"terapia led"
+			{ label: "limpieza", aliases: ["limpiar", "higiene facial", "asepsia"] },
+			{ label: "exfoliacion", aliases: ["exfoliar", "exfoliante"] },
+			{ label: "extraccion", aliases: ["extraer", "extracciones", "retiro de comedones"] },
+			{ label: "plasma con ozono", aliases: ["plasma ozono", "plasma ozonizado"] },
+			{ label: "alta frecuencia", aliases: ["alta frecuencia facial", "electrodo de alta frecuencia"] },
+			{
+				label: "reparador tisular",
+				aliases: ["reparadores tisulares", "activo reparador", "reparador de piel"]
+			},
+			{ label: "aceite de ozono", aliases: ["oleo de ozono", "ozono en aceite"] },
+			{ label: "mascarilla", aliases: ["mascara", "aplicar mascarilla"] },
+			{ label: "tonico", aliases: ["tonificar", "locion tonica"] },
+			{ label: "sellar tratamiento", aliases: ["sellado", "cerrar tratamiento", "finalizar tratamiento"] },
+			{ label: "terapia led", aliases: ["led", "luz led", "fototerapia led"] }
 		]
 	},
 	{
@@ -242,19 +287,28 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Piel seca, sensible, leve deshidratacion con telangiectasias. Aroma cosmetica, desmaquillar con limpiadora de acido hialuronico, exfoliante de coco o peeling de acido hialuronico, tonico de aloe vera, mascarilla de velo con luz LED roja y sellar tratamiento con tonico de acido hialuronico y protector solar.",
 		keyPoints: [
-			"piel seca",
-			"sensible",
-			"leve deshidratacion",
-			"telangiectasias",
-			"aroma cosmetica",
-			"limpiadora de acido hialuronico",
-			"exfoliante de coco",
-			"peeling de acido hialuronico",
-			"tonico de aloe vera",
-			"mascarilla de velo",
-			"luz led roja",
-			"tonico de acido hialuronico",
-			"protector solar"
+			{ label: "piel seca", aliases: ["resequedad", "piel reseca"] },
+			{ label: "sensible", aliases: ["piel sensible", "sensibilidad"] },
+			{ label: "leve deshidratacion", aliases: ["deshidratacion ligera", "poca hidratacion"] },
+			{ label: "telangiectasias", aliases: ["telangiectasia", "vasitos", "capilares visibles"] },
+			{ label: "aroma cosmetica", aliases: ["aromacosmetica", "aromaterapia cosmetica"] },
+			{
+				label: "limpiadora de acido hialuronico",
+				aliases: ["limpieza con acido hialuronico", "desmaquillar con hialuronico", "limpiador hialuronico"]
+			},
+			{ label: "exfoliante de coco", aliases: ["exfoliar con coco", "coco"] },
+			{
+				label: "peeling de acido hialuronico",
+				aliases: ["peeling hialuronico", "peeling con hialuronico"]
+			},
+			{ label: "tonico de aloe vera", aliases: ["tonico aloe", "aloe vera", "sabila"] },
+			{ label: "mascarilla de velo", aliases: ["velo", "mascara de velo"] },
+			{ label: "luz led roja", aliases: ["led roja", "terapia led roja", "luz roja"] },
+			{
+				label: "tonico de acido hialuronico",
+				aliases: ["tonico hialuronico", "acido hialuronico para sellar"]
+			},
+			{ label: "protector solar", aliases: ["bloqueador solar", "fps", "proteccion solar"] }
 		]
 	},
 	{
@@ -264,12 +318,24 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Especies quimicas caracterizadas por tener un electron suelto, haciendola electronicamente incompleta e inestable. Para obtener estabilidad toman un electron de otra sustancia, oxidandola y dejando a otra inestable y con estructura danada.",
 		keyPoints: [
-			"especies quimicas",
-			"electron suelto",
-			"incompleta e inestable",
-			"toman un electron",
-			"oxidan otra sustancia",
-			"estructura danada"
+			{ label: "especies quimicas", aliases: ["moleculas", "atomos", "compuestos quimicos"] },
+			{ label: "electron suelto", aliases: ["electron libre", "electron desapareado", "electron sin pareja"] },
+			{
+				label: "incompleta e inestable",
+				aliases: ["inestable", "electronicamente incompleta", "no tiene estabilidad"]
+			},
+			{
+				label: "toman un electron",
+				aliases: ["roban un electron", "buscan un electron", "captan electrones"]
+			},
+			{
+				label: "oxidan otra sustancia",
+				aliases: ["causan oxidacion", "provocan oxidacion", "oxidan celulas"]
+			},
+			{
+				label: "estructura danada",
+				aliases: ["dana estructura", "causa dano", "deja otra molecula inestable"]
+			}
 		]
 	},
 	{
@@ -279,18 +345,21 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Exfoliacion, apertura de ganglios, masaje reductivo, maderoterapia seguido de cavitacion, ultrasonido o radiofrecuencia segun el tipo de grasa; finalizamos con metaloterapia fria. Masaje corporal igual a drenaje linfatico, mascarilla y sellar tratamiento con vendas.",
 		keyPoints: [
-			"exfoliacion",
-			"apertura de ganglios",
-			"masaje reductivo",
-			"maderoterapia",
-			"cavitacion",
-			"ultrasonido",
-			"radiofrecuencia",
-			"tipo de grasa",
-			"metaloterapia fria",
-			"drenaje linfatico",
-			"mascarilla",
-			"sellar tratamiento con vendas"
+			{ label: "exfoliacion", aliases: ["exfoliar", "exfoliante"] },
+			{ label: "apertura de ganglios", aliases: ["abrir ganglios", "activacion de ganglios"] },
+			{ label: "masaje reductivo", aliases: ["masaje reductor", "masaje para reducir"] },
+			{ label: "maderoterapia", aliases: ["madera", "terapia con madera"] },
+			{ label: "cavitacion", aliases: ["cavitador"] },
+			{ label: "ultrasonido", aliases: ["ultrasonido estetico"] },
+			{ label: "radiofrecuencia", aliases: ["radio frecuencia", "rf"] },
+			{ label: "tipo de grasa", aliases: ["segun la grasa", "dependiendo de la grasa"] },
+			{ label: "metaloterapia fria", aliases: ["metal frio", "metaloterapia con frio"] },
+			{ label: "drenaje linfatico", aliases: ["drenaje", "masaje linfatico", "drenaje manual"] },
+			{ label: "mascarilla", aliases: ["mascara", "aplicar mascarilla"] },
+			{
+				label: "sellar tratamiento con vendas",
+				aliases: ["vendas", "vendaje", "sellar con vendas", "cerrar con vendas"]
+			}
 		]
 	},
 	{
@@ -300,15 +369,18 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Activos que ayudan a la hidratacion y a reparar la piel. Ejemplos: aloe vera, rosa mosqueta, frutos rojos, acido hialuronico, ceramidas y jalea real.",
 		keyPoints: [
-			"activos",
-			"ayudan a la hidratacion",
-			"reparar la piel",
-			"aloe vera",
-			"rosa mosqueta",
-			"frutos rojos",
-			"acido hialuronico",
-			"ceramidas",
-			"jalea real"
+			{ label: "activos", aliases: ["principios activos", "ingredientes activos"] },
+			{
+				label: "ayudan a la hidratacion",
+				aliases: ["hidratan", "aportan hidratacion", "mantienen hidratacion"]
+			},
+			{ label: "reparar la piel", aliases: ["regenerar la piel", "reparacion cutanea", "restaurar la piel"] },
+			{ label: "aloe vera", aliases: ["sabila"] },
+			{ label: "rosa mosqueta", aliases: ["aceite de rosa mosqueta"] },
+			{ label: "frutos rojos", aliases: ["frutas rojas", "berries"] },
+			{ label: "acido hialuronico", aliases: ["hialuronico"] },
+			{ label: "ceramidas", aliases: ["lipidos de barrera"] },
+			{ label: "jalea real", aliases: ["jalea"] }
 		]
 	},
 	{
@@ -318,13 +390,22 @@ export const questions: OpenQuestion[] = [
 		guideAnswer:
 			"Risorio, buccinador, cigomatico mayor / menor, elevador labio superior, piramidal y cuadrado del menton.",
 		keyPoints: [
-			"risorio",
-			"buccinador",
-			"cigomatico mayor",
-			"cigomatico menor",
-			"elevador labio superior",
-			"piramidal",
-			"cuadrado del menton"
+			{ label: "risorio", aliases: ["musculo risorio"] },
+			{ label: "buccinador", aliases: ["musculo buccinador"] },
+			{
+				label: "cigomatico mayor",
+				aliases: ["zigomatico mayor", "cigomatico mayor y menor", "cigomaticos"]
+			},
+			{
+				label: "cigomatico menor",
+				aliases: ["zigomatico menor", "cigomatico mayor y menor", "cigomaticos"]
+			},
+			{
+				label: "elevador labio superior",
+				aliases: ["elevador del labio superior", "musculo elevador labial"]
+			},
+			{ label: "piramidal", aliases: ["procer", "musculo piramidal"] },
+			{ label: "cuadrado del menton", aliases: ["cuadrado mentoniano", "mentoniano"] }
 		]
 	}
 ];

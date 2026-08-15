@@ -114,6 +114,12 @@ describe("evaluateAnswer", () => {
 		expect(result.status).toBe("correct");
 		expect(result.score).toBe(100);
 		expect(result.matchedPoints).toEqual(["atraen y retienen el agua"]);
+		expect(result.matchedPointDetails).toEqual([
+			{
+				label: "atraen y retienen el agua",
+				matchedBy: "conserva la hidratacion"
+			}
+		]);
 		expect(result.missingPoints).toEqual([]);
 	});
 
@@ -131,6 +137,14 @@ describe("evaluateAnswer", () => {
 		expect(result.matchedPoints).toContain("drenaje linfatico manual");
 		expect(result.matchedPoints).toContain("mascarilla");
 		expect(result.matchedPoints).toContain("sellar tratamiento");
+		expect(result.matchedPointDetails).toContainEqual({
+			label: "apertura de ganglios",
+			matchedBy: "abrir ganglios"
+		});
+		expect(result.matchedPointDetails).toContainEqual({
+			label: "masaje reductivo",
+			matchedBy: "masaje reductor"
+		});
 	});
 
 	it("uses real aliases from the free radical question", () => {

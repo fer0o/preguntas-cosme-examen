@@ -6,7 +6,13 @@ export type EvaluationResult = {
 	score: number;
 	feedback: string;
 	matchedPoints: string[];
+	matchedPointDetails: MatchedPointDetail[];
 	missingPoints: string[];
+};
+
+export type MatchedPointDetail = {
+	label: string;
+	matchedBy: string;
 };
 
 const FILLER_WORDS = new Set([
@@ -71,8 +77,13 @@ function keyPointMatchers(point: KeyPointInput): string[] {
 	return [point.label, ...(point.aliases ?? [])];
 }
 
-function matchesKeyPoint(answer: string, point: KeyPointInput): boolean {
-	return keyPointMatchers(point).some((matcher) => matchesPoint(answer, matcher));
+function findKeyPointMatch(answer: string, point: KeyPointInput): MatchedPointDetail | null {
+	const matchedBy = keyPointMatchers(point).find((matcher) => matchesPoint(answer, matcher));
+	if (!matchedBy) return null;
+	return {
+		label: keyPointLabel(point),
+		matchedBy
+	};
 }
 
 export function evaluateAnswer(question: OpenQuestion, answer: string): EvaluationResult {
@@ -84,13 +95,15 @@ export function evaluateAnswer(question: OpenQuestion, answer: string): Evaluati
 			score: 0,
 			feedback: "La respuesta es demasiado corta para evaluar los conceptos clave.",
 			matchedPoints: [],
+			matchedPointDetails: [],
 			missingPoints: question.keyPoints.map(keyPointLabel)
 		};
 	}
 
-	const matchedPoints = question.keyPoints
-		.filter((point) => matchesKeyPoint(cleanAnswer, point))
-		.map(keyPointLabel);
+	const matchedPointDetails = question.keyPoints
+		.map((point) => findKeyPointMatch(cleanAnswer, point))
+		.filter((match): match is MatchedPointDetail => match !== null);
+	const matchedPoints = matchedPointDetails.map((match) => match.label);
 	const missingPoints = question.keyPoints
 		.filter((point) => !matchedPoints.includes(keyPointLabel(point)))
 		.map(keyPointLabel);
@@ -103,6 +116,7 @@ export function evaluateAnswer(question: OpenQuestion, answer: string): Evaluati
 			score,
 			feedback: "La respuesta cubre la mayoria de los puntos clave esperados.",
 			matchedPoints,
+			matchedPointDetails,
 			missingPoints
 		};
 	}
@@ -114,6 +128,7 @@ export function evaluateAnswer(question: OpenQuestion, answer: string): Evaluati
 			score,
 			feedback: "La respuesta contiene ideas correctas, pero faltan conceptos importantes.",
 			matchedPoints,
+			matchedPointDetails,
 			missingPoints
 		};
 	}
@@ -124,6 +139,7 @@ export function evaluateAnswer(question: OpenQuestion, answer: string): Evaluati
 		score,
 		feedback: "La respuesta no cubre suficientes puntos clave de la guia.",
 		matchedPoints,
+		matchedPointDetails,
 		missingPoints
 	};
 }

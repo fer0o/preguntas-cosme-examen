@@ -33,4 +33,16 @@ describe("questions", () => {
 			});
 		});
 	});
+
+	it("uses alias-ready key point objects for every question", () => {
+		questions.forEach((question) => {
+			question.keyPoints.forEach((point) => {
+				expect(typeof point).toBe("object");
+				if (typeof point === "string") return;
+				expect(point.label.trim()).not.toBe("");
+				expect(point.aliases).toBeDefined();
+				expect(point.aliases?.length).toBeGreaterThan(0);
+			});
+		});
+	});
 });

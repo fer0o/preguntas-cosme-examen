@@ -7,6 +7,7 @@ App web para practicar preguntas abiertas de cosmetologia. La persona escribe su
 - 17 preguntas confirmadas de cosmetologia.
 - Practica de respuesta abierta en una sola pantalla.
 - Evaluacion local por puntos clave.
+- Todas las preguntas tienen aliases/sinonimos locales para aceptar respuestas equivalentes.
 - Resultado por pregunta: correcta, parcial o incorrecta.
 - Porcentaje, feedback, puntos detectados y puntos faltantes.
 - Resumen final con promedio y preguntas por reforzar.
@@ -80,7 +81,7 @@ npm run preview
 ## Archivos Clave
 
 - `src/data/questions.ts`: banco de preguntas, respuestas guia y puntos clave.
-- `src/lib/evaluateAnswer.ts`: evaluador local deterministico.
+- `src/lib/evaluateAnswer.ts`: evaluador local deterministico con soporte para aliases.
 - `src/pages/index.astro`: interfaz principal, progreso, resumen e historial.
 - `AGENTS.md`: contexto tecnico para futuras sesiones de Codex.
 
@@ -115,6 +116,7 @@ El resultado mantiene esta forma:
 	score: number,
 	feedback: string,
 	matchedPoints: string[],
+	matchedPointDetails: { label: string, matchedBy: string }[],
 	missingPoints: string[]
 }
 ```
@@ -123,11 +125,10 @@ Esta estructura debe mantenerse estable para mejorar el evaluador local sin rees
 
 ## Plan Futuro
 
-- Mejorar el evaluador local con sinonimos y respuestas equivalentes.
-- Cambiar `keyPoints` a una estructura con `label` y `aliases`.
 - Agregar reglas por tipo de pregunta: definicion, lista y secuencia.
 - Mantener la app gratis y local, sin dependencias de APIs externas.
 - Opcional: mejorar el historial con tendencias por intento.
+- Ajustar aliases a partir de respuestas reales que se evalúen mal.
 
 ## Notas
 

@@ -29,11 +29,10 @@ The app lets the user:
 ## Code Map
 
 - `src/pages/index.astro`: main app UI, client-side state, localStorage persistence, summary, and history.
-- `src/data/questions.ts`: confirmed question bank with `id`, `topic`, `prompt`, `guideAnswer`, and `keyPoints`.
-- `src/lib/evaluateAnswer.ts`: deterministic local evaluator. It normalizes accents/case and compares the answer against `keyPoints`.
+- `src/data/questions.ts`: confirmed question bank with `id`, `topic`, `prompt`, `guideAnswer`, and `keyPoints`. Every key point is an object with `label` and `aliases`.
+- `src/lib/evaluateAnswer.ts`: deterministic local evaluator. It normalizes accents/case and compares the answer against key point labels and aliases.
 - `src/layouts/Layout.astro`: base HTML shell, Spanish document language, title, and body styling.
 - `src/styles/global.css`: Tailwind CSS import.
-- `src/components/Welcome.astro`, `src/assets/*`: leftover Astro starter files; currently not used by the app.
 
 ## Commands
 
@@ -41,7 +40,7 @@ The app lets the user:
 - Dev server: `npm run dev`
 - Production build check: `npm run build`
 - Preview production build: `npm run preview`
-- There are no custom lint/test scripts yet.
+- Tests: `npm test`
 
 ## Persistence
 
@@ -72,17 +71,18 @@ Keep this result shape stable while improving the local evaluator:
 	score: number,
 	feedback: string,
 	matchedPoints: string[],
+	matchedPointDetails: { label: string, matchedBy: string }[],
 	missingPoints: string[]
 }
 ```
 
-Current local evaluation is intentionally simple. It can vary when users phrase answers differently. The planned improvement is local aliases/synonyms, not a paid AI API.
+Current local evaluation supports local aliases/synonyms. It can still vary when users phrase answers in ways that are not covered by aliases.
 
 ## Future Local Evaluation Plan
 
 - Keep the app free/local and avoid paid API dependencies.
-- Improve `src/data/questions.ts` by changing `keyPoints` from `string[]` to objects with `label` and optional `aliases`.
-- Update `src/lib/evaluateAnswer.ts` to match labels and aliases.
+- Keep `keyPoints` as objects with `label` and `aliases`.
+- Add or adjust aliases from real user answers that score unfairly.
 - Add local rules for definitions, lists, and ordered treatment sequences if needed.
 - Update tests whenever evaluator behavior changes.
 
